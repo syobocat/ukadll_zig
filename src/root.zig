@@ -9,11 +9,16 @@ const win32 = @import("zigwin32");
 const GMEM_FIXED = win32.system.memory.GMEM_FIXED;
 const globalAlloc = win32.system.memory.GlobalAlloc;
 
-pub fn request(comptime f: fn ([]const u8) [:0]const u8) fn (*anyopaque, *c_long) callconv(.c) *anyopaque {
+pub fn request(comptime f: fn ([]const u8, std.mem.Allocator) [:0]const u8, gpa: std.mem.Allocator) fn (*anyopaque, *c_long) callconv(.c) *anyopaque {
     return struct {
         fn request(h: *anyopaque, len: *c_long) callconv(.c) *anyopaque {
+            var arena = std.heap.ArenaAllocator.init(gpa);
+            defer arena.deinit();
+
+            const allocator = arena.allocator();
+
             const body = hglobalToString(h, len.*);
-            const res = f(body);
+            const res = f(body, allocator);
             const res_len = res.len + 1; // .lenはsentinelを無視するので+1
 
             const addr: usize = @intCast(globalAlloc(GMEM_FIXED, res_len));
@@ -26,13 +31,15 @@ pub fn request(comptime f: fn ([]const u8) [:0]const u8) fn (*anyopaque, *c_long
     }.request;
 }
 
-fn request_test(req: []const u8) [:0]const u8 {
+fn request_test(req: []const u8, allocator: std.mem.Allocator) [:0]const u8 {
     std.debug.print("Received a request: {s}\n", .{req});
-    return "OK";
+    return std.fmt.allocPrint(allocator, "OK", .{});
 }
 test "Check request" {
     if (comptime builtin.target.os.tag == .windows) {
-        const r = request(request_test);
+        const allocator = std.testing.allocator;
+
+        const r = request(request_test, allocator);
         const body = "GET";
         var len: c_long = @intCast(body.len);
         const res = r(@constCast(body), &len);
@@ -53,9 +60,8 @@ pub fn load(comptime f: fn ([]const u8) anyerror!void) fn (*anyopaque, c_long) c
     }.load;
 }
 
-fn load_test(v: []const u8) bool {
+fn load_test(v: []const u8) !void {
     std.debug.print("{s}\n", .{v});
-    return true;
 }
 test "Check load" {
     const l = load(load_test);

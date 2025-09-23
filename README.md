@@ -20,7 +20,7 @@ const allocator = gpa.allocator();
 export const loadu = ukadll.load(_loadu);
 export const load = ukadll.load(_load);
 export const unload = ukadll.unload(_unload);
-export const request = ukadll.request(_request);
+export const request = ukadll.request(_request, allocator);
 
 fn _loadu(_: []const u8) !void {
     // リソースの読み込み等 (UTF-8版)
@@ -35,7 +35,7 @@ fn _unload() void {
     _ = gpa.deinit();
 }
 
-fn _request(_: []const u8) [:0]const u8 {
+fn _request(_: []const u8, _: std.mem.Allocator) [:0]const u8 {
     // リクエストの処理
     return "SHIORI/3.0 204 No Content\r\n\r\n";
 }
