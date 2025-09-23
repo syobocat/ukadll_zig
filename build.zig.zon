@@ -4,7 +4,7 @@
 
 .{
     .name = .ukadll,
-    .version = "0.1.0",
+    .version = "0.1.1",
 
     .fingerprint = 0x45c781cf34395d9c,
     .minimum_zig_version = "0.15.1",
