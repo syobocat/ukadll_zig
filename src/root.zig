@@ -13,7 +13,7 @@ const globalFree = win32.system.memory.GlobalFree;
 pub fn request(comptime f: fn ([]const u8, std.mem.Allocator) [:0]const u8, gpa: std.mem.Allocator) fn (*anyopaque, *c_long) callconv(.c) *anyopaque {
     return struct {
         fn request(h: *anyopaque, len: *c_long) callconv(.c) *anyopaque {
-            defer globalFree(@intCast(@intFromPtr(h)));
+            defer _ = globalFree(@intCast(@intFromPtr(h)));
 
             var arena = std.heap.ArenaAllocator.init(gpa);
             defer arena.deinit();
@@ -56,7 +56,7 @@ test "Check request" {
 pub fn load(comptime f: fn ([]const u8) anyerror!void) fn (*anyopaque, c_long) callconv(.c) c_int {
     return struct {
         fn load(h: *anyopaque, len: c_long) callconv(.c) c_int {
-            defer globalFree(@intCast(@intFromPtr(h)));
+            defer _ = globalFree(@intCast(@intFromPtr(h)));
 
             const str = hglobalToString(h, len);
             f(str) catch return boolToInt(false);
