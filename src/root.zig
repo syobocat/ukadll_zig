@@ -42,11 +42,14 @@ test "Check request" {
     if (comptime builtin.target.os.tag == .windows) {
         const allocator = std.testing.allocator;
 
+        const addr: usize = @intCast(globalAlloc(GMEM_FIXED, 4));
+        const ptr: [*]u8 = @ptrFromInt(addr);
+        @memcpy(ptr, "GET");
+        ptr[4] = 0;
+
         const r = request(request_test, allocator);
-        const body = "GET";
-        var len: c_long = @intCast(body.len);
-        const res = r(@constCast(body), &len);
-        const res_str = hglobalToString(res, len);
+        const res = r(ptr, &3);
+        const res_str = hglobalToString(res, 2);
         std.debug.print("Received a response: {s}\n", .{res_str});
     } else {
         std.debug.print("Target OS is not Windows, skipping a test for `request`.\n", .{});
