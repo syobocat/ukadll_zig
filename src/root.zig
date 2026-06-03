@@ -35,7 +35,7 @@ pub fn request(comptime f: fn ([]const u8, std.mem.Allocator) [:0]const u8, gpa:
 }
 
 fn request_test(req: []const u8, _: std.mem.Allocator) [:0]const u8 {
-    std.debug.print("Received a request: {s}\n", .{req});
+    std.log.info("Received a request: {s}\n", .{req});
     return "OK";
 }
 test "Check request" {
@@ -52,9 +52,9 @@ test "Check request" {
         const r = request(request_test, allocator);
         const res = r(ptr, &c_len);
         const res_str = hglobalToString(res, 2);
-        std.debug.print("Received a response: {s}\n", .{res_str});
+        std.log.info("Received a response: {s}\n", .{res_str});
     } else {
-        std.debug.print("Target OS is not Windows, skipping a test for `request`.\n", .{});
+        std.log.warn("Target OS is not Windows, skipping a test for `request`.\n", .{});
     }
 }
 
@@ -71,7 +71,7 @@ pub fn load(comptime f: fn ([]const u8) anyerror!void) fn (*anyopaque, c_long) c
 }
 
 fn load_test(v: []const u8) !void {
-    std.debug.print("{s}\n", .{v});
+    std.log.info("{s}\n", .{v});
 }
 test "Check load" {
     if (comptime builtin.target.os.tag == .windows) {
@@ -85,7 +85,7 @@ test "Check load" {
 
         try std.testing.expect(l(ptr, len) == 1);
     } else {
-        std.debug.print("Target OS is not Windows, skipping a test for `load`.\n", .{});
+        std.log.warn("Target OS is not Windows, skipping a test for `load`.\n", .{});
     }
 }
 
@@ -99,7 +99,7 @@ pub fn unload(comptime f: fn () void) fn () callconv(.c) c_int {
 }
 
 fn unload_test() void {
-    std.debug.print("Goodbye, World!\n", .{});
+    std.log.info("Goodbye, World!\n", .{});
 }
 test "Check unload" {
     const ul = unload(unload_test);
