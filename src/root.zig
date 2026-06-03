@@ -34,9 +34,9 @@ pub fn request(comptime f: fn ([]const u8, std.mem.Allocator) [:0]const u8, gpa:
     }.request;
 }
 
-fn request_test(req: []const u8, allocator: std.mem.Allocator) [:0]const u8 {
+fn request_test(req: []const u8, _: std.mem.Allocator) [:0]const u8 {
     std.debug.print("Received a request: {s}\n", .{req});
-    return std.fmt.allocPrint(allocator, "OK", .{});
+    return "OK";
 }
 test "Check request" {
     if (comptime builtin.target.os.tag == .windows) {
