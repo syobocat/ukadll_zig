@@ -42,13 +42,14 @@ test "Check request" {
     if (comptime builtin.target.os.tag == .windows) {
         const allocator = std.testing.allocator;
 
-        const addr: usize = @intCast(globalAlloc(GMEM_FIXED, 4));
+        var len: c_long = 3;
+        const addr: usize = @intCast(globalAlloc(GMEM_FIXED, len + 1));
         const ptr: [*]u8 = @ptrFromInt(addr);
         @memcpy(ptr, "GET");
-        ptr[4] = 0;
+        ptr[len + 1] = 0;
 
         const r = request(request_test, allocator);
-        const res = r(ptr, &3);
+        const res = r(ptr, &len);
         const res_str = hglobalToString(res, 2);
         std.debug.print("Received a response: {s}\n", .{res_str});
     } else {
