@@ -42,14 +42,15 @@ test "Check request" {
     if (comptime builtin.target.os.tag == .windows) {
         const allocator = std.testing.allocator;
 
-        var len: c_long = 3;
-        const addr: usize = @intCast(globalAlloc(GMEM_FIXED, 4));
+        const len = 3;
+        var c_len: c_long = len;
+        const addr: usize = @intCast(globalAlloc(GMEM_FIXED, len + 1));
         const ptr: [*]u8 = @ptrFromInt(addr);
         @memcpy(ptr, "GET");
-        ptr[4] = 0;
+        ptr[len + 1] = 0;
 
         const r = request(request_test, allocator);
-        const res = r(ptr, &len);
+        const res = r(ptr, &c_len);
         const res_str = hglobalToString(res, 2);
         std.debug.print("Received a response: {s}\n", .{res_str});
     } else {
@@ -76,9 +77,13 @@ test "Check load" {
     if (comptime builtin.target.os.tag == .windows) {
         const l = load(load_test);
 
-        const message = "Hello, World!";
-        const len: c_long = message.len;
-        try std.testing.expect(l(@constCast(message), len) == 1);
+        const len = 13;
+        const addr: usize = @intCast(globalAlloc(GMEM_FIXED, len + 1));
+        const ptr: [*]u8 = @ptrFromInt(addr);
+        @memcpy(ptr, "Hello, World!");
+        ptr[len + 1] = 0;
+
+        try std.testing.expect(l(ptr, len) == 1);
     } else {
         std.debug.print("Target OS is not Windows, skipping a test for `load`.\n", .{});
     }
