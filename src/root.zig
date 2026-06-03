@@ -43,10 +43,10 @@ test "Check request" {
         const allocator = std.testing.allocator;
 
         var len: c_long = 3;
-        const addr: usize = @intCast(globalAlloc(GMEM_FIXED, len + 1));
+        const addr: usize = @intCast(globalAlloc(GMEM_FIXED, 4));
         const ptr: [*]u8 = @ptrFromInt(addr);
         @memcpy(ptr, "GET");
-        ptr[len + 1] = 0;
+        ptr[4] = 0;
 
         const r = request(request_test, allocator);
         const res = r(ptr, &len);
