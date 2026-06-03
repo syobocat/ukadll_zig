@@ -14,8 +14,7 @@ Zigで伺か用のDLLを作成する際、ZigとCとの橋渡しを楽にする�
 const std = @import("std");
 const ukadll = @import("ukadll");
 
-var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-const allocator = gpa.allocator();
+const allocator = std.heap.c_allocator;
 
 export const loadu = ukadll.load(_loadu);
 export const load = ukadll.load(_load);
@@ -32,7 +31,6 @@ fn _load(_: []const u8) !void {
 
 fn _unload() void {
     // リソースの解放等
-    _ = gpa.deinit();
 }
 
 fn _request(_: []const u8, _: std.mem.Allocator) [:0]const u8 {
