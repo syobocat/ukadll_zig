@@ -10,7 +10,7 @@ const GMEM_FIXED = win32.system.memory.GMEM_FIXED;
 const globalAlloc = win32.system.memory.GlobalAlloc;
 const globalFree = win32.system.memory.GlobalFree;
 
-pub fn request(comptime f: fn ([]const u8, std.mem.Allocator) [:0]const u8, gpa: std.mem.Allocator) fn (*anyopaque, *c_long) callconv(.c) *anyopaque {
+pub fn request(comptime f: fn (std.mem.Allocator, []const u8) [:0]const u8, gpa: std.mem.Allocator) fn (*anyopaque, *c_long) callconv(.c) *anyopaque {
     return struct {
         fn request(h: *anyopaque, len: *c_long) callconv(.c) *anyopaque {
             defer _ = globalFree(@intCast(@intFromPtr(h)));
@@ -21,7 +21,7 @@ pub fn request(comptime f: fn ([]const u8, std.mem.Allocator) [:0]const u8, gpa:
             const allocator = arena.allocator();
 
             const body = hglobalToString(h, len.*);
-            const res = f(body, allocator);
+            const res = f(allocator, body);
             const res_len = res.len + 1; // .lenはsentinelを無視するので+1
 
             const addr: usize = @intCast(globalAlloc(GMEM_FIXED, res_len));
@@ -34,7 +34,7 @@ pub fn request(comptime f: fn ([]const u8, std.mem.Allocator) [:0]const u8, gpa:
     }.request;
 }
 
-fn request_test(req: []const u8, _: std.mem.Allocator) [:0]const u8 {
+fn request_test(_: std.mem.Allocator, req: []const u8) [:0]const u8 {
     std.log.info("Received a request: {s}\n", .{req});
     return "OK";
 }
@@ -49,7 +49,7 @@ test "Check request" {
         @memcpy(ptr, "GET");
         ptr[len + 1] = 0;
 
-        const r = request(request_test, allocator);
+        const r = request(allocator, request_test);
         const res = r(ptr, &c_len);
         const res_str = hglobalToString(res, 2);
         std.log.info("Received a response: {s}\n", .{res_str});
