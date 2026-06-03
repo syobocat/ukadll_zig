@@ -14,9 +14,9 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    const win32 = b.dependency("zigwin32", .{});
+    const win32 = b.dependency("win32", .{});
 
-    mod.addImport("zigwin32", win32.module("win32"));
+    mod.addImport("win32", win32.module("win32"));
 
     const mod_tests = b.addTest(.{
         .root_module = mod,

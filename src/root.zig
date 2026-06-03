@@ -4,7 +4,7 @@
 
 const std = @import("std");
 const builtin = @import("builtin");
-const win32 = @import("zigwin32");
+const win32 = @import("win32");
 
 const GMEM_FIXED = win32.system.memory.GMEM_FIXED;
 const globalAlloc = win32.system.memory.GlobalAlloc;
