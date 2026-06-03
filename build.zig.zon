@@ -7,7 +7,7 @@
     .version = "0.2.0",
 
     .fingerprint = 0x45c781cf34395d9c,
-    .minimum_zig_version = "0.16.0",
+    .minimum_zig_version = "0.15.2",
     .dependencies = .{
         .win32 = .{
             .url = "git+https://github.com/marlersoft/zigwin32.git#ec98bb4d9eea532320a8551720a9e3ec6de64994",
