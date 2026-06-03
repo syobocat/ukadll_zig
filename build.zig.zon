@@ -4,14 +4,14 @@
 
 .{
     .name = .ukadll,
-    .version = "0.1.3",
+    .version = "0.2.0",
 
     .fingerprint = 0x45c781cf34395d9c,
-    .minimum_zig_version = "0.15.1",
+    .minimum_zig_version = "0.15.2",
     .dependencies = .{
-        .zigwin32 = .{
-            .url = "git+https://github.com/marlersoft/zigwin32.git#9d399c0895de4746c1fcab366841e2ab031b0429",
-            .hash = "zigwin32-25.0.28-preview-AAAAANd_5APbcon3QqoYfLKnJ13fiBGJSGq9YrVZsfI-",
+        .win32 = .{
+            .url = "git+https://github.com/marlersoft/zigwin32.git#ec98bb4d9eea532320a8551720a9e3ec6de64994",
+            .hash = "win32-25.0.28-preview-mX5pFWMt5QPTVIGh3r2-OpPunpcCCjApyRbA6Zn6WALH",
         },
     },
     .paths = .{
