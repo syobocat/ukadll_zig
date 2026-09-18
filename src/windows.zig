@@ -7,8 +7,8 @@ const builtin = @import("builtin");
 const win32 = @import("win32");
 
 const GMEM_FIXED = win32.system.memory.GMEM_FIXED;
-const globalAlloc = win32.system.memory.GlobalAlloc;
-const globalFree = win32.system.memory.GlobalFree;
+const globalAlloc = win32.kernel32.GlobalAlloc;
+const globalFree = win32.kernel32.GlobalFree;
 
 pub fn request(gpa: std.mem.Allocator, comptime f: fn (std.mem.Allocator, []const u8) [:0]const u8) fn (*anyopaque, *c_long) callconv(.c) *anyopaque {
     return struct {
