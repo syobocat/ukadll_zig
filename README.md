@@ -41,4 +41,4 @@ fn _request(_: std.mem.Allocator, _: []const u8) [:0]const u8 {
 
 ## 関連
 
-- [ukadll_zig](https://github.com/syobocat/ukadll_zig/)
+- [shiori_zig](https://github.com/syobocat/shiori_zig/)
