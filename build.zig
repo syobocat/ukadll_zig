@@ -15,7 +15,7 @@ pub fn build(b: *std.Build) void {
     });
 
     if (target.result.os.tag == .windows) {
-        const win32 = b.lazyDependency("win32", .{}).?;
+        const win32 = b.dependency("win32", .{});
         mod.addImport("win32", win32.module("win32"));
     }
 
