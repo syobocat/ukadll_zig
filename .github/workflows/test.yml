@@ -23,4 +23,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Test
-        run: zig build test
+        run: zig build test --summary all
