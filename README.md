@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2025 SyoBoN <syobon@syobon.net>
+SPDX-FileCopyrightText: 2025-2026 SyoBoN <syobon@syobon.net>
 
 SPDX-License-Identifier: CC-BY-4.0
 -->
@@ -38,3 +38,7 @@ fn _request(_: std.mem.Allocator, _: []const u8) [:0]const u8 {
     return "SHIORI/3.0 204 No Content\r\n\r\n";
 }
 ```
+
+## 関連
+
+- [ukadll_zig](https://github.com/syobocat/ukadll_zig/)

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 SyoBoN <syobon@syobon.net>
+// SPDX-FileCopyrightText: 2025-2026 SyoBoN <syobon@syobon.net>
 //
 // SPDX-License-Identifier: UPL-1.0
 
@@ -14,9 +14,10 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    const win32 = b.dependency("win32", .{});
-
-    mod.addImport("win32", win32.module("win32"));
+    if (target.result.os.tag == .windows) {
+        const win32 = b.dependency("win32", .{});
+        mod.addImport("win32", win32.module("win32"));
+    }
 
     const mod_tests = b.addTest(.{
         .root_module = mod,
